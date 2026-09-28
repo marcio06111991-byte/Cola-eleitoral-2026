@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f172a">
+<title>Minha Cola Eleitoral 2026 — MG</title>
+<style>
+:root{--bg:#f3f6f8;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#e2e8f0;--green:#166534;--green2:#dcfce7}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+header{background:#0f172a;color:#fff;padding:20px 15px 15px;position:sticky;top:0;z-index:20;box-shadow:0 3px 15px #0003}
+.wrap{max-width:780px;margin:auto}.brand{font-size:24px;font-weight:900}.sub{font-size:13px;color:#cbd5e1;margin-top:3px}
+.tabs{display:flex;gap:8px;margin-top:14px}.tab{border:0;border-radius:10px;padding:10px 13px;background:#ffffff15;color:#fff;font-weight:800}.tab.active{background:#fff;color:#0f172a}
+main{padding:14px}.panel{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;margin-bottom:12px}
+.search{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:12px;font-size:16px;outline:none}.search:focus{border-color:var(--green);box-shadow:0 0 0 3px #16653420}
+.filters{display:flex;gap:7px;overflow:auto;padding:1px 0 3px;margin-top:11px}.chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-weight:700}.chip.active{background:var(--green2);border-color:#86efac;color:var(--green)}
+.count{font-size:12px;color:var(--muted);margin:12px 2px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:11px;text-align:center;box-shadow:0 2px 8px #0000000a}
+.photo{display:block;width:170px;height:170px;margin:0 auto 11px;border-radius:16px;object-fit:cover;background:#e2e8f0}
+.photo.placeholder{object-fit:contain;padding:20px}
+.cargo{font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.45px}
+.name{font-size:20px;font-weight:900;margin:3px 0}.party{font-size:13px;color:var(--muted)}
+.num{font-size:36px;font-weight:950;letter-spacing:2px;color:var(--green);line-height:1.05;margin:5px 0 10px}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:850}.add{background:var(--green);color:white}.remove{background:#fee2e2;color:#991b1b}
+.empty{text-align:center;color:var(--muted);padding:35px 10px}.hidden{display:none}
+.cola .card{padding:16px}.cola .photo{width:210px;height:210px}.cola .num{font-size:42px}
+.notice{font-size:12px;line-height:1.45;color:#475569;background:#f8fafc;border-radius:11px;padding:10px;margin-top:10px}
+footer{color:#64748b;font-size:11px;text-align:center;padding:20px 10px 35px}
+@media(max-width:420px){.photo{width:185px;height:185px}.cola .photo{width:215px;height:215px}.name{font-size:19px}.num{font-size:38px}}
+</style>
+<style>
+#installBtn{display:none;position:fixed;right:14px;bottom:14px;z-index:50;background:#166534;color:#fff;border:0;border-radius:14px;padding:13px 16px;font-weight:800;box-shadow:0 6px 20px #0003}
+</style>
+</head>
+<body>
+<button id="installBtn">📲 Instalar aplicativo</button>
+<header><div class="wrap">
+<div class="brand">🗳️ Minha Cola Eleitoral</div>
+<div class="sub">Eleições 2026 · Minas Gerais</div>
+<div class="tabs">
+<button class="tab active" id="tb" onclick="tab('busca')">Buscar candidatos</button>
+<button class="tab" id="tc" onclick="tab('cola')">⭐ Minha cola <span id="badge">(0)</span></button>
+</div>
+</div></header>
+<main class="wrap">
+<section id="busca">
+<div class="panel">
+<input id="q" class="search" placeholder="Buscar por nome, partido ou número..." oninput="render()">
+<div id="filters" class="filters"></div>
+<div id="summary" class="count"></div>
+</div>
+<div id="results"></div>
+</section>
+<section id="cola" class="hidden cola">
+<div class="panel"><b>Minha cola</b><div class="notice">Os candidatos abaixo foram escolhidos por você e ficam salvos neste aparelho. A ordem segue a sequência dos cargos de votação.</div></div>
+<div id="selected"></div>
+</section>
+</main>
+<footer>Dados de candidaturas: Tribunal Superior Eleitoral (TSE), Eleições 2026. Esta página é uma ferramenta de consulta e não recomenda candidatos.</footer>
+<script>
+let DATA=[], cargo="Todos";
+const cargos=["Todos","Presidente","Governador","Senador","Deputado Federal","Deputado Estadual"];
+let selected=JSON.parse(localStorage.getItem("colaEleitoral2026MG")||"[]");
+const ord=Object.fromEntries(cargos.map((x,i)=>[x,i]));
+const $=id=>document.getElementById(id);
+async function init(){DATA=await (await fetch("candidatos.json")).json();render()}
+function tab(x){$("busca").classList.toggle("hidden",x!=="busca");$("cola").classList.toggle("hidden",x!=="cola");$("tb").classList.toggle("active",x==="busca");$("tc").classList.toggle("active",x==="cola");if(x==="cola")renderSelected()}
+function save(){localStorage.setItem("colaEleitoral2026MG",JSON.stringify(selected));$("badge").textContent=`(${selected.length})`}
+function toggle(id){selected.includes(id)?selected=selected.filter(x=>x!==id):selected.push(id);save();render();renderSelected()}
+function img(x,cls="photo"){return x.foto?`<img class="${cls}" src="fotos/${x.foto}" alt="Foto de ${esc(x.nome)}" loading="lazy">`:`<div class="${cls} placeholder" style="display:flex;align-items:center;justify-content:center;font-size:44px">👤</div>`}
+function esc(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+function renderFilters(){$("filters").innerHTML=cargos.map(x=>`<button class="chip ${cargo===x?"active":""}" onclick="cargo='${x}';render()">${x}</button>`).join("")}
+function render(){
+renderFilters();save();
+const q=$("q").value.toLowerCase().trim();
+const data=DATA.filter(x=>(cargo==="Todos"||x.cargo===cargo)&&(!q||[x.nome,x.nomeCompleto,x.numero,x.partido,x.partidoNome].join(" ").toLowerCase().includes(q)));
+$("summary").textContent=`${data.length.toLocaleString("pt-BR")} candidato${data.length===1?"":"s"} encontrado${data.length===1?"":"s"}`;
+$("results").innerHTML=data.map(x=>`<article class="card">${img(x)}<div class="cargo">${esc(x.cargo)}</div><div class="name">${esc(x.nome)}</div><div class="party">${esc(x.partido)} · ${esc(x.partidoNome)}</div><div class="num">${esc(x.numero)}</div><button class="btn ${selected.includes(x.id)?"remove":"add"}" onclick="toggle('${x.id}')">${selected.includes(x.id)?"✓ Na minha cola":"Adicionar à minha cola"}</button></article>`).join("")||`<div class="panel empty">Nenhum candidato encontrado.</div>`;
+}
+function renderSelected(){
+const data=selected.map(id=>DATA.find(x=>x.id===id)).filter(Boolean).sort((a,b)=>ord[a.cargo]-ord[b.cargo]||Number(a.numero)-Number(b.numero));
+$("selected").innerHTML=data.length?data.map(x=>`<article class="card">${img(x,"photo")}<div class="cargo">${esc(x.cargo)}</div><div class="name">${esc(x.nome)}</div><div class="party">${esc(x.partido)}</div><div class="num">${esc(x.numero)}</div><button class="btn remove" onclick="toggle('${x.id}')">Remover</button></article>`).join(""):`<div class="panel empty">Sua cola está vazia.<br>Use “Buscar candidatos” para adicionar.</div>`;
+}
+init();
+</script>
+<script>
+let deferredPrompt;
+const ib=document.getElementById('installBtn');
+window.addEventListener('beforeinstallprompt', e=>{e.preventDefault();deferredPrompt=e;ib.style.display='block';});
+ib.addEventListener('click', async()=>{if(!deferredPrompt)return; deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null; ib.style.display='none';});
+window.addEventListener('appinstalled',()=>ib.style.display='none');
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
+</script>
+</body>
+</html>
