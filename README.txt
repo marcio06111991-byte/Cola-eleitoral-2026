@@ -1,16 +1,7 @@
-COLA ELEITORAL 2026 — GITHUB PAGES
+COLA ELEITORAL 2026 - VERSAO COM FOTOS EMBUTIDAS
 
-Esta versão foi corrigida para NÃO depender de fetch de candidatos.json. Os dados dos 1.797 candidatos estão incorporados no index.html; as fotos ficam na pasta fotos/.
+As fotos dos candidatos de Minas Gerais estao embutidas diretamente no index.html. Assim, nao e necessario enviar a pasta fotos para o GitHub.
 
-IMPORTANTE: envie o CONTEÚDO desta pasta para a raiz do branch main do seu repositório GitHub Pages. O index.html deve ficar na raiz, e a pasta fotos deve ficar ao lado dele.
+Envie os arquivos desta pasta para a raiz do repositorio.
 
-Estrutura:
-index.html
-fotos/
-manifest.webmanifest
-sw.js
-icon-192.png
-icon-512.png
-.nojekyll
-
-O GitHub Pages precisa publicar a partir da mesma branch/pasta onde está o index.html.
+Observacao: a base de fotos fornecida para este projeto e de candidatos de MG; por isso candidatos presidenciais sem foto nessa base aparecem com o icone de pessoa.
