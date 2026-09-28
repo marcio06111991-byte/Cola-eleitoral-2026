@@ -1,11 +1,16 @@
-COLA ELEITORAL 2026 — MINAS GERAIS
-Versão completa baseada nos arquivos fornecidos do TSE.
+COLA ELEITORAL 2026 — GITHUB PAGES
 
-Conteúdo:
-- 1.797 candidatos em cargos de votação: Presidente, Governador, Senador, Deputado Federal e Deputado Estadual.
-- Fotos de candidatos de MG cruzadas pelo SQ_CANDIDATO quando disponíveis.
-- Busca por nome, partido ou número.
-- Filtros por cargo.
-- Minha Cola salva no dispositivo.
+Esta versão foi corrigida para NÃO depender de fetch de candidatos.json. Os dados dos 1.797 candidatos estão incorporados no index.html; as fotos ficam na pasta fotos/.
 
-Observação: Vice-governador, 1º suplente e 2º suplente constam na base oficial, mas não são votos separados na tela principal da cola.
+IMPORTANTE: envie o CONTEÚDO desta pasta para a raiz do branch main do seu repositório GitHub Pages. O index.html deve ficar na raiz, e a pasta fotos deve ficar ao lado dele.
+
+Estrutura:
+index.html
+fotos/
+manifest.webmanifest
+sw.js
+icon-192.png
+icon-512.png
+.nojekyll
+
+O GitHub Pages precisa publicar a partir da mesma branch/pasta onde está o index.html.
